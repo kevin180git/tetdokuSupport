@@ -26,7 +26,7 @@
                 <h1>Support</h1>
                 <p>Need help with Tetdoku? We're here to assist you! Please fill out the form below and we'll get back to you as soon as possible.</p>
 
-                <form id="support-form" class="support-form">
+                <form id="support-form" class="support-form" action="https://formspree.io/f/xqalnwan" method="POST">
                     <div class="form-group">
                         <label for="name">Name *</label>
                         <input type="text" id="name" name="name" required>
@@ -34,7 +34,7 @@
 
                     <div class="form-group">
                         <label for="email">Email *</label>
-                        <input type="email" id="email" name="email" required>
+                        <input type="email" id="email" name="_replyto" required>
                     </div>
 
                     <div class="form-group">
@@ -50,12 +50,22 @@
                         </label>
                     </div>
 
+                    <!-- Added hidden fields for Formspree -->
+                    <input type="hidden" name="_subject" value="Tetdoku Support Request">
+                    <input type="hidden" name="_next" value="thank-you">
+
                     <button type="submit" class="btn btn-primary">Send Message</button>
                 </form>
 
                 <div id="confirmation-message" class="confirmation-message" style="display: none;">
                     <h3>✅ Message Sent Successfully!</h3>
                     <p>Thank you for contacting us. We've received your message and will respond within 24-48 hours.</p>
+                </div>
+
+                <!-- Added error message for failed submissions -->
+                <div id="error-message" class="error-message" style="display: none;">
+                    <h3>❌ Message Failed to Send</h3>
+                    <p>Sorry, there was an error sending your message. Please try again or contact us directly.</p>
                 </div>
             </section>
 
@@ -81,8 +91,8 @@
         <div class="footer-content">
             <p>&copy; 2024 Tetdoku. All rights reserved.</p>
             <div class="footer-links">
-                <a href="support.html">Support</a>
-                <a href="privacy.html">Privacy Policy</a>
+                <a href="/support">Support</a>
+                <a href="/privacy">Privacy Policy</a>
             </div>
         </div>
     </footer>

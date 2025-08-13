@@ -2,9 +2,10 @@
 document.addEventListener("DOMContentLoaded", () => {
   const supportForm = document.getElementById("support-form")
   const confirmationMessage = document.getElementById("confirmation-message")
+  const errorMessage = document.getElementById("error-message")
 
   if (supportForm) {
-    supportForm.addEventListener("submit", (e) => {
+    supportForm.addEventListener("submit", async (e) => {
       e.preventDefault()
 
       // Get form data
@@ -15,36 +16,61 @@ document.addEventListener("DOMContentLoaded", () => {
       const consent = formData.get("consent")
 
       // Basic validation
-      if (!name || !email || !message || !consent) {
-        alert("Please fill in all required fields and agree to the consent checkbox.")
+      if (!consent) {
+        alert("Please agree to the consent checkbox to proceed.")
         return
       }
 
-      // Simulate form submission
-      // In a real implementation, you would send this data to your backend
-      // or use a service like Formspree, Netlify Forms, or EmailJS
+      const submitButton = supportForm.querySelector('button[type="submit"]')
+      const originalButtonText = submitButton.textContent
+      submitButton.textContent = "Sending..."
+      submitButton.disabled = true
 
-      console.log("Form submitted:", {
-        name: name,
-        email: email,
-        message: message,
-        consent: consent,
-        timestamp: new Date().toISOString(),
-      })
+      try {
+        const response = await fetch(supportForm.action, {
+          method: "POST",
+          body: formData,
+          headers: {
+            Accept: "application/json",
+          },
+        })
 
-      // Show confirmation message
-      supportForm.style.display = "none"
-      confirmationMessage.style.display = "block"
+        if (response.ok) {
+          supportForm.style.display = "none"
+          confirmationMessage.style.display = "block"
+          errorMessage.style.display = "none"
 
-      // Scroll to confirmation message
-      confirmationMessage.scrollIntoView({ behavior: "smooth" })
+          // Scroll to confirmation message
+          confirmationMessage.scrollIntoView({ behavior: "smooth" })
 
-      // Optional: Reset form after a delay
-      setTimeout(() => {
-        supportForm.reset()
-        supportForm.style.display = "block"
+          // Reset form after delay
+          setTimeout(() => {
+            supportForm.reset()
+            supportForm.style.display = "block"
+            confirmationMessage.style.display = "none"
+            submitButton.textContent = originalButtonText
+            submitButton.disabled = false
+          }, 10000)
+        } else {
+          throw new Error("Form submission failed")
+        }
+      } catch (error) {
+        console.error("Form submission error:", error)
+        errorMessage.style.display = "block"
         confirmationMessage.style.display = "none"
-      }, 10000) // Reset after 10 seconds
+
+        // Scroll to error message
+        errorMessage.scrollIntoView({ behavior: "smooth" })
+
+        // Reset button state
+        submitButton.textContent = originalButtonText
+        submitButton.disabled = false
+
+        // Hide error message after delay
+        setTimeout(() => {
+          errorMessage.style.display = "none"
+        }, 8000)
+      }
     })
   }
 
